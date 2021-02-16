@@ -1,0 +1,27 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/insertPaymentTransactionDB" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/top/insertPaymentTransactionDB" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="PaymentTransactionLogCollection" type="PaymentTransactionLogCollection"/>
+   <xs:complexType name="PaymentTransactionLogCollection">
+      <xs:sequence>
+         <xs:element name="PaymentTransactionLog" type="PaymentTransactionLog" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="PaymentTransactionLog">
+      <xs:sequence>
+         <xs:element name="companycode" type="string50" minOccurs="0" nillable="true"/>
+         <xs:element name="sequencenum" type="string50" nillable="true"/>
+         <xs:element name="transactiondata" type="xs:string" minOccurs="0" nillable="true"/>
+         <xs:element name="transactioncomment" type="string200" minOccurs="0" nillable="true"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:simpleType name="string50">
+      <xs:restriction base="xs:string">
+         <xs:maxLength value="50"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="string200">
+      <xs:restriction base="xs:string">
+         <xs:maxLength value="200"/>
+      </xs:restriction>
+   </xs:simpleType>
+</xs:schema>

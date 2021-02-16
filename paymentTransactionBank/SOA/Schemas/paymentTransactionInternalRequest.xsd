@@ -1,0 +1,17 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sa="http://www.saptco.com.sa" targetNamespace="http://www.saptco.com.sa"
+     elementFormDefault="qualified">
+    <xsd:element name="paymentTransaction">
+        <xsd:complexType>
+            <xsd:sequence maxOccurs="1">
+                <xsd:element name="fileLocation" type="sa:file"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="file">
+        <xsd:sequence>
+            <xsd:element name="fileDirectory" type="xsd:string"/>
+            <xsd:element name="fileName" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

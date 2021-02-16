@@ -1,0 +1,14 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sa="http://www.saptco.com.sa" targetNamespace="http://www.saptco.com.sa"
+     elementFormDefault="qualified">
+    <xsd:element name="PaymentTransactionResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="CompanyCode" type="xsd:string"/>
+                <xsd:element name="SequenceNum" type="xsd:int"/>
+                <xsd:element name="StatusCode" type="xsd:string"/>
+                <xsd:element name="StatusDetail" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

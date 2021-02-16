@@ -1,0 +1,32 @@
+<wsdl:definitions
+     name="selectPaymentResponse"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/paymentTransactionBank/SanbaPaymentSwift-TM100/selectPaymentResponse"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/paymentTransactionBank/SanbaPaymentSwift-TM100/selectPaymentResponse"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/selectPaymentResponse"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+  <plt:partnerLinkType name="selectPaymentResponse_plt" >
+    <plt:role name="selectPaymentResponse_role" >
+      <plt:portType name="tns:selectPaymentResponse_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+    <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/selectPaymentResponse" schemaLocation="../Schemas/selectPaymentResponse_table.xsd" />
+      </schema>
+    </wsdl:types>
+    <wsdl:message name="selectPaymentResponseSelect_inputParameters">
+        <wsdl:part name="selectPaymentResponseSelect_inputParameters" element="top:selectPaymentResponseSelectInputParameters"/>
+    </wsdl:message>
+    <wsdl:message name="PaymentTransactionResponseCollection_msg">
+        <wsdl:part name="PaymentTransactionResponseCollection" element="top:PaymentTransactionResponseCollection"/>
+    </wsdl:message>
+    <wsdl:portType name="selectPaymentResponse_ptt">
+        <wsdl:operation name="selectPaymentResponseSelect">
+            <wsdl:input message="tns:selectPaymentResponseSelect_inputParameters"/>
+            <wsdl:output message="tns:PaymentTransactionResponseCollection_msg"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

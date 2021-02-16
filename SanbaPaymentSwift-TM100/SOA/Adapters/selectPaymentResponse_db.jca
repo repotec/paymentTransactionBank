@@ -1,0 +1,14 @@
+<adapter-config name="selectPaymentResponse" adapter="db" wsdlLocation="../WSDLs/selectPaymentResponse.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory UIConnectionName="soademoConn" location="eis/DB/soademoConn"/>
+  <endpoint-interaction portType="selectPaymentResponse_ptt" operation="selectPaymentResponseSelect">
+    <interaction-spec className="oracle.tip.adapter.db.DBReadInteractionSpec">
+      <property name="DescriptorName" value="selectPaymentResponse.PaymentTransactionResponse"/>
+      <property name="QueryName" value="selectPaymentResponseSelect"/>
+      <property name="MappingsMetaDataURL" value="selectPaymentResponse-or-mappings.xml"/>
+      <property name="ReturnSingleResultSet" value="false"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

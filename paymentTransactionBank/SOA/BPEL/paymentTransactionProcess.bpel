@@ -1,0 +1,106 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Feb 16 00:10:11 EET 2021
+  Author:  pc
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="paymentTransactionProcess"
+               targetNamespace="http://xmlns.oracle.com/paymentTransactionBank/paymentTransactionBank/paymentTransactionProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/paymentTransactionBank/paymentTransactionBank/paymentTransactionProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:ui="http://xmlns.oracle.com/soa/designer"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/file/paymentTransactionBank/paymentTransactionBank/readPaymentTransactionFile"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.saptco.com.sa"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/paymentTransactionBank/paymentTransactionBank/insertPaymentTransactionDB">
+
+    <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/paymentTransactionBank/paymentTransactionBank/paymentTransactionProcess" location="../WSDLs/paymentTransactionProcess.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="paymentTransactionProcessClient" partnerLinkType="client:paymentTransactionProcess" myRole="paymentTransactionProcessProvider"/>
+    <partnerLink name="readPaymentTransactionFile" partnerLinkType="ns1:SynchRead_plt" partnerRole="SynchRead_role"/>
+    <partnerLink name="insertPaymentTransactionDB" partnerLinkType="ns3:insertPaymentTransactionDB_plt"
+                 partnerRole="insertPaymentTransactionDB_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:paymentTransactionProcessRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:paymentTransactionProcessResponseMessage"/>
+    <variable name="fileDirectory" type="xsd:string"/>
+    <variable name="fileName" type="xsd:string"/>
+    <variable name="InvokeReadFile_SynchRead_InputVariable" messageType="ns1:Empty_msg"/>
+    <variable name="InvokeReadFile_SynchRead_OutputVariable" messageType="ns1:SynchRead_msg"/>
+    <variable name="InvokeInsert_insert_InputVariable" messageType="ns3:PaymentTransactionLogCollection_msg"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in paymentTransactionProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="paymentTransactionProcessClient" portType="client:paymentTransactionProcess" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="AssignFileLocation">
+      <copy>
+        <from>$inputVariable.payload/ns2:fileLocation/ns2:fileDirectory</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$fileDirectory</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/ns2:fileLocation/ns2:fileName</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$fileName</to>
+      </copy>
+    </assign>
+    <invoke name="InvokeReadFile" partnerLink="readPaymentTransactionFile"
+            portType="ns1:SynchRead_ptt" operation="SynchRead" inputVariable="InvokeReadFile_SynchRead_InputVariable"
+            bpelx:invokeAsDetail="no" outputVariable="InvokeReadFile_SynchRead_OutputVariable">
+      <bpelx:toProperties>
+        <bpelx:toProperty name="jca.file.Directory" variable="fileDirectory"/>
+        <bpelx:toProperty name="jca.file.FileName" variable="fileName"/>
+      </bpelx:toProperties>
+    </invoke>
+    <assign name="TransformationFileOuput">
+      <bpelx:annotation>
+        <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from>ora:doXSLTransformForDoc("../Transformations/Transformation1_1.xsl", $InvokeReadFile_SynchRead_OutputVariable.body)</from>
+        <to variable="InvokeInsert_insert_InputVariable" part="PaymentTransactionLogCollection"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeInsert" bpelx:invokeAsDetail="no" partnerLink="insertPaymentTransactionDB"
+            portType="ns3:insertPaymentTransactionDB_ptt" operation="insert"
+            inputVariable="InvokeInsert_insert_InputVariable"/>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="paymentTransactionProcessClient" portType="client:paymentTransactionProcess" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

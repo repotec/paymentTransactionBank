@@ -1,0 +1,23 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE.COMPANYCODE:db_column_size">100</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE.SEQUENCENUM:db_column_type">VARCHAR2</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE.STATUSCODE:db_column_size">100</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE.COMPANYCODE:db_column_not_null">false</entry>
+   <entry key="return_single_result_set">false</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE:db_column_3">STATUSDETAIL</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE:db_column_2">STATUSCODE</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE:db_column_1">SEQUENCENUM</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE.STATUSDETAIL:db_column_type">VARCHAR2</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE:db_column_0">COMPANYCODE</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE.COMPANYCODE:db_column_type">VARCHAR2</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE.SEQUENCENUM:db_column_size">100</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE.STATUSCODE:db_column_not_null">false</entry>
+   <entry key="root_descriptor_alias">PAYMENT_TRANSACTION_RESPONSE</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE.SEQUENCENUM:db_column_not_null">false</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE.STATUSCODE:db_column_type">VARCHAR2</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE:db_table_type">TABLE</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE.STATUSDETAIL:db_column_not_null">false</entry>
+   <entry key="PAYMENT_TRANSACTION_RESPONSE.STATUSDETAIL:db_column_size">100</entry>
+</properties>

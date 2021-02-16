@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+   <entry key="PAYMENT_TRANSACTION_LOG.COMPANYCODE:db_column_not_null">false</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG.SEQUENCENUM:db_column_not_null">false</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG.TRANSACTIONCOMMENT:db_column_not_null">false</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG.TRANSACTIONDATA:db_column_not_null">false</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG:db_column_3">TRANSACTIONCOMMENT</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG.SEQUENCENUM:db_column_type">VARCHAR2</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG:db_column_2">TRANSACTIONDATA</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG:db_table_type">TABLE</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG.TRANSACTIONDATA:db_column_type">CLOB</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG:db_column_1">SEQUENCENUM</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG.COMPANYCODE:db_column_type">VARCHAR2</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG.TRANSACTIONCOMMENT:db_column_type">VARCHAR2</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG:db_column_0">COMPANYCODE</entry>
+   <entry key="root_descriptor_alias">PAYMENT_TRANSACTION_LOG</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG.SEQUENCENUM:db_column_size">50</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG.COMPANYCODE:db_column_size">50</entry>
+   <entry key="PAYMENT_TRANSACTION_LOG.TRANSACTIONCOMMENT:db_column_size">200</entry>
+</properties>
