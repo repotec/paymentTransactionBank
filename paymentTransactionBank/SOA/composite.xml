@@ -15,8 +15,10 @@
           location="WSDLs/readPaymentTransactionFile.wsdl" importType="wsdl"/>
   <import namespace="http://xmlns.oracle.com/paymentTransactionBank/paymentTransactionBank/paymentTransactionProcess"
           location="WSDLs/paymentTransactionProcess.wsdl" importType="wsdl"/>
-  <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/paymentTransactionBank/paymentTransactionBank/insertPaymentTransactionDB"
-          location="WSDLs/insertPaymentTransactionDB.wsdl" importType="wsdl"/>
+  <import namespace="http://oracle.com/sca/soapservice/paymentTransactionBank/SanbaPaymentSwift-TM100/SOAPService"
+          location="WSDLs/mt100Client.wsdl" importType="wsdl"/>
+  <import namespace="http://oracle.com/sca/soapservice/paymentTransactionBank/SanbaPaymentSwift-TM100/SOAPService"
+          location="WSDLs/SOAPServiceWrapper.wsdl" importType="wsdl"/>
   <service name="paymentTransactionProcessClient_ep" ui:wsdlLocation="WSDLs/paymentTransactionProcess.wsdl">
     <interface.wsdl interface="http://xmlns.oracle.com/paymentTransactionBank/paymentTransactionBank/paymentTransactionProcess#wsdl.interface(paymentTransactionProcess)"/>
     <binding.ws port="http://xmlns.oracle.com/paymentTransactionBank/paymentTransactionBank/paymentTransactionProcess#wsdl.endpoint(paymentTransactionProcessClient_ep/paymentTransactionProcess_pt)"/>
@@ -32,8 +34,8 @@
       <reference name="readPaymentTransactionFile" ui:wsdlLocation="WSDLs/readPaymentTransactionFile.wsdl">
         <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/paymentTransactionBank/paymentTransactionBank/readPaymentTransactionFile#wsdl.interface(SynchRead_ptt)"/>
       </reference>
-      <reference name="insertPaymentTransactionDB" ui:wsdlLocation="WSDLs/insertPaymentTransactionDB.wsdl">
-        <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/db/paymentTransactionBank/paymentTransactionBank/insertPaymentTransactionDB#wsdl.interface(insertPaymentTransactionDB_ptt)"/>
+      <reference name="MT100Client" ui:wsdlLocation="WSDLs/SOAPServiceWrapper.wsdl">
+        <interface.wsdl interface="http://oracle.com/sca/soapservice/paymentTransactionBank/SanbaPaymentSwift-TM100/SOAPService#wsdl.interface(execute_ptt)"/>
       </reference>
     </componentType>
     <property name="bpel.config.transaction" type="xs:string" many="false">required</property>
@@ -42,13 +44,13 @@
     <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/paymentTransactionBank/paymentTransactionBank/readPaymentTransactionFile#wsdl.interface(SynchRead_ptt)"/>
     <binding.jca config="Adapters/readPaymentTransactionFile_file.jca"/>
   </reference>
-  <reference name="insertPaymentTransactionDB" ui:wsdlLocation="WSDLs/insertPaymentTransactionDB.wsdl">
-    <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/db/paymentTransactionBank/paymentTransactionBank/insertPaymentTransactionDB#wsdl.interface(insertPaymentTransactionDB_ptt)"/>
-    <binding.jca config="Adapters/insertPaymentTransactionDB_db.jca"/>
-    <property name="jca.retry.count" type="xs:int" many="false" override="may">4</property>
-    <property name="jca.retry.interval" type="xs:int" many="false" override="may">1</property>
-    <property name="jca.retry.backoff" type="xs:int" many="false" override="may">2</property>
-    <property name="jca.retry.maxInterval" type="xs:int" many="false" override="may">120</property>
+  <reference name="MT100Client" ui:wsdlLocation="WSDLs/mt100Client.wsdl">
+    <interface.wsdl interface="http://oracle.com/sca/soapservice/paymentTransactionBank/SanbaPaymentSwift-TM100/SOAPService#wsdl.interface(execute_ptt)"/>
+    <binding.ws port="http://oracle.com/sca/soapservice/paymentTransactionBank/SanbaPaymentSwift-TM100/SOAPService#wsdl.endpoint(SOAPService/execute_pt)"
+                location="http://127.0.0.1:7101/soa-infra/services/default/SanbaPaymentSwift-TM100/mt100Client?WSDL"
+                soapVersion="1.1">
+      <property name="weblogic.wsee.wsat.transaction.flowOption" type="xs:string" many="false">WSDLDriven</property>
+    </binding.ws>
   </reference>
   <wire>
     <source.uri>paymentTransactionProcessClient_ep</source.uri>
@@ -59,7 +61,7 @@
     <target.uri>readPaymentTransactionFile</target.uri>
   </wire>
   <wire>
-    <source.uri>paymentTransactionProcess/insertPaymentTransactionDB</source.uri>
-    <target.uri>insertPaymentTransactionDB</target.uri>
+    <source.uri>paymentTransactionProcess/MT100Client</source.uri>
+    <target.uri>MT100Client</target.uri>
   </wire>
 </composite>

@@ -19,7 +19,8 @@
          xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
          xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/file/paymentTransactionBank/paymentTransactionBank/readPaymentTransactionFile"
          xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.saptco.com.sa"
-         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/paymentTransactionBank/paymentTransactionBank/insertPaymentTransactionDB">
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/paymentTransactionBank/paymentTransactionBank/insertPaymentTransactionDB"
+         xmlns:ns4="http://oracle.com/sca/soapservice/paymentTransactionBank/SanbaPaymentSwift-TM100/SOAPService">
 
     <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/paymentTransactionBank/paymentTransactionBank/paymentTransactionProcess" location="../WSDLs/paymentTransactionProcess.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <!-- 
@@ -36,8 +37,7 @@
     -->
     <partnerLink name="paymentTransactionProcessClient" partnerLinkType="client:paymentTransactionProcess" myRole="paymentTransactionProcessProvider"/>
     <partnerLink name="readPaymentTransactionFile" partnerLinkType="ns1:SynchRead_plt" partnerRole="SynchRead_role"/>
-    <partnerLink name="insertPaymentTransactionDB" partnerLinkType="ns3:insertPaymentTransactionDB_plt"
-                 partnerRole="insertPaymentTransactionDB_role"/>
+    <partnerLink name="MT100Client" partnerLinkType="ns4:MT100Client" partnerRole="execute_ptt"/>
   </partnerLinks>
 
   <!-- 
@@ -56,7 +56,9 @@
     <variable name="fileName" type="xsd:string"/>
     <variable name="InvokeReadFile_SynchRead_InputVariable" messageType="ns1:Empty_msg"/>
     <variable name="InvokeReadFile_SynchRead_OutputVariable" messageType="ns1:SynchRead_msg"/>
-    <variable name="InvokeInsert_insert_InputVariable" messageType="ns3:PaymentTransactionLogCollection_msg"/>
+    <variable name="Invoke1_execute_InputVariable" messageType="ns4:requestMessage"/>
+    <variable name="InvokeMT100_InputVariable" messageType="ns4:requestMessage"/>
+    <variable name="InvokeMT100_OutputVariable" messageType="ns4:replyMessage"/>
   </variables>
 
   <!-- 
@@ -88,18 +90,28 @@
         <bpelx:toProperty name="jca.file.FileName" variable="fileName"/>
       </bpelx:toProperties>
     </invoke>
-    <assign name="TransformationFileOuput">
+    <assign name="TransformFile">
       <bpelx:annotation>
         <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
       </bpelx:annotation>
       <copy>
-        <from>ora:doXSLTransformForDoc("../Transformations/Transformation1_1.xsl", $InvokeReadFile_SynchRead_OutputVariable.body)</from>
-        <to variable="InvokeInsert_insert_InputVariable" part="PaymentTransactionLogCollection"/>
+        <from>ora:doXSLTransformForDoc("../Transformations/TransformFile_1.xsl", $InvokeReadFile_SynchRead_OutputVariable.body)</from>
+        <to variable="InvokeMT100_InputVariable" part="input"/>
       </copy>
     </assign>
-    <invoke name="InvokeInsert" bpelx:invokeAsDetail="no" partnerLink="insertPaymentTransactionDB"
-            portType="ns3:insertPaymentTransactionDB_ptt" operation="insert"
-            inputVariable="InvokeInsert_insert_InputVariable"/>
+    <invoke name="InvokeMT100" partnerLink="MT100Client" portType="ns4:execute_ptt"
+            operation="execute" inputVariable="InvokeMT100_InputVariable" outputVariable="InvokeMT100_OutputVariable"
+            bpelx:invokeAsDetail="no"/>
+    <assign name="AssignOutput">
+      <copy>
+        <from>$InvokeMT100_OutputVariable.output/ns2:StatusCode</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns2:responseMessage/ns2:responseStatus</to>
+      </copy>
+      <copy>
+        <from>$InvokeMT100_OutputVariable.output/ns2:StatusDetail</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns2:responseMessage/ns2:responseMessage</to>
+      </copy>
+    </assign>
     <!-- Generate reply to synchronous request -->
     <reply name="replyOutput" partnerLink="paymentTransactionProcessClient" portType="client:paymentTransactionProcess" operation="process" variable="outputVariable"/>
   </sequence>

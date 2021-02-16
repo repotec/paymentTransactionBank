@@ -1,0 +1,19 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sa="http://www.saptco.com.sa" targetNamespace="http://www.saptco.com.sa"
+     elementFormDefault="qualified">
+    <xsd:element name="PaymentMessage">
+        <xsd:complexType>
+            <xsd:sequence maxOccurs="1">
+                <xsd:element name="PaymentTransaction" type="sa:PaymentTransaction"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="PaymentTransaction">
+        <xsd:sequence maxOccurs="1">
+            <xsd:element name="CompanyCode" type="xsd:string"/>
+            <xsd:element name="SequenceNum" type="xsd:string"/>
+            <xsd:element name="TransactionData" type="xsd:string"/>
+            <xsd:element name="TransactionComment" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>
